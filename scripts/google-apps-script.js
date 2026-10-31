@@ -43,7 +43,24 @@
  */
 
 const NOTIFICATION_EMAIL = "uttkarshhulke@gmail.com";
+const SPREADSHEET_NAME = "WebEstly Customer Enquiries";
 const SHEET_NAME = "Enquiries";
+
+/**
+ * Robust spreadsheet resolver:
+ * Works whether script is bound to a Google Sheet (Extensions > Apps Script)
+ * OR created as a standalone script from script.google.com!
+ */
+function getEnquirySpreadsheet() {
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+
+  const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
+  if (files.hasNext()) {
+    return SpreadsheetApp.open(files.next());
+  }
+  return SpreadsheetApp.create(SPREADSHEET_NAME);
+}
 
 /**
  * Handle HTTP POST requests
@@ -111,8 +128,8 @@ function doPost(e) {
       }, 400);
     }
 
-    // 5. Access or initialize spreadsheet
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    // 5. Access or initialize spreadsheet (works bound or standalone)
+    const ss = getEnquirySpreadsheet();
     let sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
       sheet = ss.getSheets()[0];
