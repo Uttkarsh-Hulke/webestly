@@ -1,0 +1,121 @@
+:root {
+  /* ============================================================
+     WEBESTLY OFFICIAL BRAND DESIGN TOKENS (Single source of truth)
+     ============================================================ */
+
+  /* Official Brand Palette */
+  --color-brand-navy: #10243a;
+  --color-brand-orange: #ff6500;
+  --color-brand-gold: #ffb000;
+  --color-brand-white: #ffffff;
+  --color-brand-warm: #f7f8fa;
+  --color-brand-slate: #334155;
+  --color-brand-dark-orange: #c2410c;
+
+  /* Semantic Design Tokens */
+  --color-bg: #ffffff;
+  --color-surface: #f7f8fa;
+  --color-surface-dark: #10243a;
+  --color-text: #10243a;
+  --color-muted: #334155;
+  --color-primary: #ff6500;
+  --color-primary-text: #10243a;
+  --color-primary-hover: #ff7a1f;
+  --color-border: #e2e8f0;
+  --color-border-dark: #1e3a5f;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+
+  /* Typography: Headings Manrope, Body Plus Jakarta Sans */
+  --font-family-heading: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-body: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family: var(--font-family-body);
+
+  /* Typography: Scale (rem) */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+
+  /* Typography: Weights allowed */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Typography: Line heights */
+  --leading-body: 1.5;
+  --leading-heading: 1.2;
+  --leading-label: 1;
+
+  /* Spacing (0.25rem = 4px base): only 0, 1, 2, 3, 4, 6, 8, 12, 16 */
+  --space-0: 0px;
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Modest Corner Radius: 4px sm, 6px md, 8px lg */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(16, 36, 58, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(16, 36, 58, 0.08);
+
+  /* Layout */
+  --layout-max-width: 1200px;
+  --container-padding-desktop: 24px;
+  --container-padding-mobile: 16px;
+  --section-rhythm-desktop: 64px;
+  --section-rhythm-mobile: 40px;
+
+  /* Concept Artwork & Showcase Tokens */
+  --concept-cafe-bg: #2b1810;
+  --concept-cafe-dark: #451a03;
+  --concept-cafe-brown: #78350f;
+  --concept-cafe-amber: #d97706;
+  --concept-cafe-gold: #f59e0b;
+  --concept-cafe-cream: #fffbeb;
+  --concept-cafe-roast: #92400e;
+  --concept-cafe-steam: #fde68a;
+  --concept-cafe-panel: #1c100b;
+
+  --concept-edu-bg: #0a1120;
+  --concept-edu-grid: #1e293b;
+  --concept-edu-royal: #1e40af;
+  --concept-edu-light: #93c5fd;
+  --concept-edu-border: #334155;
+  --concept-edu-sky: #60a5fa;
+  --concept-edu-muted: #94a3b8;
+  --concept-edu-mint: #34d399;
+  --concept-edu-emerald: #059669;
+  --concept-edu-navy: #172554;
+  --concept-edu-ice: #bfdbfe;
+  --concept-edu-darkblue: #1e3a8a;
+  --concept-edu-blue: #3b82f6;
+  --concept-edu-teal: #0d9488;
+
+  --concept-arch-bg: #141210;
+  --concept-arch-grid: #262320;
+  --concept-arch-stone: #78716c;
+  --concept-arch-card: #1c1917;
+  --concept-arch-wall: #57534e;
+  --concept-arch-line: #a8a29e;
+  --concept-arch-light: #d6d3d1;
+  --concept-arch-dark: #292524;
+  --concept-arch-border: #44403c;
+  --concept-arch-white: #e7e5e4;
+  --concept-arch-linen: #f5f5f4;
+}

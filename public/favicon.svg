@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="380 40 375 210" width="64" height="64" role="img" aria-label="WebEstly">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect x="370" y="30" width="395" height="230" rx="40" fill="#10243A"/>
+  <g transform="translate(0 2)" filter="url(#shadow)">
+    <path d="M390 52 L452 52 L500 157 L548 82 Q562 60 580 82 L630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L565 151 L524 221 Q513 242 495 242 Q477 242 467 220 Z"
+          fill="#FFFFFF"/>
+    <path d="M630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L595 202 L631 157 Z"
+          fill="#FF6500"/>
+    <path d="M681 52 L743 52 L703 134 L672 119 Z" fill="#FFB000"/>
+  </g>
+</svg>

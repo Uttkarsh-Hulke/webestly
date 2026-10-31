@@ -1,0 +1,26 @@
+{
+  "name": "WebEstly - Websites That Work for Your Business",
+  "short_name": "WebEstly",
+  "description": "Modern, mobile-friendly websites, web applications, and AI integrations for growing businesses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#10243A",
+  "theme_color": "#10243A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

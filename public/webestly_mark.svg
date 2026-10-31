@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="385 45 365 205" width="365" height="205" role="img" aria-labelledby="title desc">
+  <title id="title">WebEstly Mark</title>
+  <desc id="desc">The geometric W brand mark of WebEstly.</desc>
+  <g transform="translate(0 2)">
+    <path d="M390 52 L452 52 L500 157 L548 82 Q562 60 580 82 L630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L565 151 L524 221 Q513 242 495 242 Q477 242 467 220 Z"
+          fill="#10243A"/>
+    <path d="M630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L595 202 L631 157 Z"
+          fill="#FF6500"/>
+    <path d="M681 52 L743 52 L703 134 L672 119 Z" fill="#FFB000"/>
+  </g>
+</svg>

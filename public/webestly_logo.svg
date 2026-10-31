@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">WebEstly logo</title>
+  <desc id="desc">A clean navy and orange W mark, the WebEstly wordmark, and the tagline Websites That Work for Your Business.</desc>
+  <rect width="1200" height="420" fill="#FFFFFF"/>
+  <!-- Simple geometric W with a rising orange right stroke -->
+  <g transform="translate(0 2)">
+    <path d="M390 52 L452 52 L500 157 L548 82 Q562 60 580 82 L630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L565 151 L524 221 Q513 242 495 242 Q477 242 467 220 Z"
+          fill="#10243A"/>
+    <path d="M630 157 L681 52 L743 52 L663 220 Q653 242 635 242 Q617 242 606 221 L595 202 L631 157 Z"
+          fill="#FF6500"/>
+    <path d="M681 52 L743 52 L703 134 L672 119 Z" fill="#FFB000"/>
+  </g>
+  <!-- Wordmark uses a bold system sans-serif for clean, editable vector text -->
+  <text x="600" y="315" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="94" font-weight="700" letter-spacing="-3">
+    <tspan fill="#10243A">Web</tspan><tspan fill="#FF6500">Estly</tspan>
+  </text>
+  <text x="600" y="365" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="400" letter-spacing="2.2" fill="#334155">Websites That Work for Your Business.</text>
+</svg>
