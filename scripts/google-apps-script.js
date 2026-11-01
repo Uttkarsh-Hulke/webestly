@@ -1,44 +1,17 @@
 /**
  * ============================================================================
- * WebEstly - Google Sheets & Google Apps Script Integration
+ * WebEstly - Google Sheets & Google Apps Script Backend Integration
  * ============================================================================
  * Spreadsheet Name: "WebEstly Customer Enquiries"
- * Target Sheet Name: "Enquiries"
+ * Target Sheet Tab:  "Enquiries"
  * Notification Email: uttkarshhulke@gmail.com
+ * Timezone:           Asia/Kolkata (IST)
+ * Default Status:     New
  *
  * This script runs as a Google Apps Script Web App. It receives enquiry submissions
- * forwarded by the Cloudflare Pages Function (or direct POST), validates and
- * sanitizes all inputs, prevents duplicate submissions, writes to Google Sheets,
- * and sends an instant email notification to Uttkarsh Hulke.
- *
- * ----------------------------------------------------------------------------
- * STEP-BY-STEP SETUP INSTRUCTIONS
- * ----------------------------------------------------------------------------
- * 1. Open Google Sheets (https://sheets.google.com).
- * 2. Create a new blank spreadsheet.
- * 3. Title the spreadsheet in the top left:
- *      WebEstly Customer Enquiries
- * 4. In the top navigation menu, click:
- *      Extensions > Apps Script
- * 5. In the Apps Script code editor, delete any existing code (such as myFunction).
- * 6. Paste this entire file contents into the editor.
- * 7. Click the floppy disk icon ("Save project") or press Ctrl+S.
- * 8. At the top right, click the blue "Deploy" button and choose "New deployment".
- * 9. In the modal:
- *      - Click the gear icon next to "Select type" and choose "Web app".
- *      - Description: WebEstly Customer Enquiry API
- *      - Execute as: Me (your Google account)
- *      - Who has access: Anyone (allows Cloudflare Pages Function to forward enquiries)
- * 10. Click "Deploy".
- * 11. Google will prompt you to "Authorize access". Click it, choose your account,
- *     click "Advanced" > "Go to Untitled project (unsafe)" > "Allow".
- * 12. Copy the "Web app URL" provided:
- *     (It looks like: https://script.google.com/macros/s/AKfycb.../exec)
- * 13. Add this URL as an environment secret:
- *     - Local: In your .env file:
- *         APPS_SCRIPT_URL=https://script.google.com/macros/s/.../exec
- *     - Cloudflare Pages: Dashboard > Your Project > Settings > Environment variables:
- *         Add variable: APPS_SCRIPT_URL (Encrypt / Secret)
+ * forwarded by the Cloudflare Worker proxy (/api/enquiries) or directly from the
+ * React frontend contact form, validates and sanitizes all inputs, prevents duplicate
+ * submissions, records enquiries in Google Sheets, and sends instant email alerts.
  * ============================================================================
  */
 
@@ -47,9 +20,9 @@ const SPREADSHEET_NAME = "WebEstly Customer Enquiries";
 const SHEET_NAME = "Enquiries";
 
 /**
- * Robust spreadsheet resolver:
- * Works whether script is bound to a Google Sheet (Extensions > Apps Script)
- * OR created as a standalone script from script.google.com!
+ * Access or create the target spreadsheet:
+ * Supports container-bound execution (Extensions > Apps Script inside a Sheet)
+ * and standalone execution (from script.google.com).
  */
 function getEnquirySpreadsheet() {
   const active = SpreadsheetApp.getActiveSpreadsheet();
@@ -63,13 +36,13 @@ function getEnquirySpreadsheet() {
 }
 
 /**
- * Handle HTTP POST requests
+ * Handle HTTP POST requests (Enquiry Submissions)
  */
 function doPost(e) {
+  // 1. Concurrency control: LockService prevents simultaneous write conflicts
   const lock = LockService.getScriptLock();
-  // Wait up to 10 seconds for concurrent requests
   try {
-    lock.waitLock(10000);
+    lock.waitLock(10000); // Wait up to 10 seconds
   } catch (lockError) {
     return responseJSON({ 
       status: "error", 
@@ -80,7 +53,7 @@ function doPost(e) {
   try {
     let data;
 
-    // 1. Parse incoming payload (supports JSON or URL-encoded form data)
+    // 2. Parse incoming payload (supports JSON payload from Cloudflare/fetch)
     if (e.postData && e.postData.contents) {
       try {
         data = JSON.parse(e.postData.contents);
@@ -90,20 +63,22 @@ function doPost(e) {
     } else if (e.parameter) {
       data = e.parameter;
     } else {
-      return responseJSON({ status: "error", message: "No data payload received" }, 400);
+      return responseJSON({ 
+        status: "error", 
+        message: "No data payload received." 
+      }, 400);
     }
 
-    // 2. Spam Honeypot Detection
-    if (data.honeypot && data.honeypot.trim() !== "") {
-      // Silently accept bots without writing to sheet or spamming inbox
+    // 3. Honeypot Spam Protection
+    if (data.honeypot && String(data.honeypot).trim() !== "") {
       return responseJSON({ 
         status: "success", 
         enquiryId: "SPAM-TRAPPED", 
-        message: "Enquiry received." 
+        message: "Thanks! Your enquiry has been received." 
       });
     }
 
-    // 3. Extract and Sanitize Inputs
+    // 4. Extract and sanitize inputs (matches ContactForm.jsx & functions/api/enquiries.js)
     const customerName = sanitize(data.customerName || data.name || "");
     const email = sanitize(data.email || "");
     const businessName = sanitize(data.businessName || "Not Provided");
@@ -112,7 +87,7 @@ function doPost(e) {
     const budgetFlexibility = sanitize(data.budgetFlexibility || "Not Specified");
     const projectDescription = sanitize(data.projectDescription || "");
 
-    // 4. Server-Side Validation
+    // 5. Server-side validation for required fields
     if (!customerName || !email || !projectDescription) {
       return responseJSON({
         status: "error",
@@ -120,7 +95,7 @@ function doPost(e) {
       }, 400);
     }
 
-    // Simple email pattern check
+    // Basic email pattern check
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return responseJSON({
         status: "error",
@@ -128,7 +103,7 @@ function doPost(e) {
       }, 400);
     }
 
-    // 5. Access or initialize spreadsheet (works bound or standalone)
+    // 6. Access or initialize spreadsheet and tab
     const ss = getEnquirySpreadsheet();
     let sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
@@ -136,7 +111,7 @@ function doPost(e) {
       sheet.setName(SHEET_NAME);
     }
 
-    // Initialize the exact 10 columns if the sheet is fresh
+    // Exact 10 columns as required
     const headers = [
       "Enquiry ID",
       "Submission Date",
@@ -160,8 +135,7 @@ function doPost(e) {
       sheet.setFrozenRows(1);
     }
 
-    // 6. Duplicate Submission Protection
-    // Check recent submissions to avoid accidental double-clicks or duplicates
+    // 7. Duplicate Submission Prevention (inspect last 10 submissions)
     const lastRow = sheet.getLastRow();
     if (lastRow > 1) {
       const checkRows = Math.min(lastRow - 1, 10);
@@ -174,7 +148,6 @@ function doPost(e) {
         const existingDesc = String(row[8]).trim();
 
         if (existingEmail === email.toLowerCase() && existingDesc === projectDescription) {
-          // Duplicate detected - return success with existing ID
           return responseJSON({
             status: "success",
             enquiryId: String(row[0]),
@@ -185,13 +158,13 @@ function doPost(e) {
       }
     }
 
-    // 7. Generate Unique Enquiry ID & Format Timestamp
+    // 8. Timestamps in Indian Standard Time (IST) & Unique Enquiry ID
     const now = new Date();
     const submissionDate = Utilities.formatDate(now, "Asia/Kolkata", "yyyy-MM-dd HH:mm:ss");
     const enquiryId = data.enquiryId || "ENQ-" + now.getTime() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     const status = "New";
 
-    // 8. Append Row to Google Sheet
+    // 9. Append Row to Google Sheet
     sheet.appendRow([
       enquiryId,
       submissionDate,
@@ -209,7 +182,7 @@ function doPost(e) {
     const newRowIndex = sheet.getLastRow();
     sheet.getRange(newRowIndex, 1, 1, 10).setWrap(true);
 
-    // 9. Send Email Notification to Founder
+    // 10. Send Email Notification to Founder
     try {
       const emailSubject = `[WebEstly Enquiry] ${customerName} (${businessName}) - ${serviceRequired}`;
       const emailBody = `
@@ -236,8 +209,8 @@ PROJECT DESCRIPTION:
 ${projectDescription}
 
 ===================================================
-View the full enquiry database in Google Sheets:
-"WebEstly Customer Enquiries"
+Spreadsheet: "${SPREADSHEET_NAME}"
+View URL: ${ss.getUrl()}
       `.trim();
 
       MailApp.sendEmail({
@@ -247,10 +220,10 @@ View the full enquiry database in Google Sheets:
         replyTo: email
       });
     } catch (emailErr) {
-      Logger.log("Email notification note: " + emailErr.toString());
+      Logger.log("Email notification error: " + emailErr.toString());
     }
 
-    // 10. Return Verified Success Response
+    // 11. Return Verified JSON Success Response
     return responseJSON({
       status: "success",
       enquiryId: enquiryId,
@@ -270,7 +243,7 @@ View the full enquiry database in Google Sheets:
 }
 
 /**
- * Handle HTTP GET / healthcheck
+ * Handle HTTP GET / Health check
  */
 function doGet(e) {
   return responseJSON({
